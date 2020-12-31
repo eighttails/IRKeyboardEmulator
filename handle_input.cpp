@@ -518,7 +518,7 @@ void deinit_input()
 
 bool get_input(input_event &event)
 {
-    if (read(input, (void*)&event, sizeof(event)) != sizeof(event)) {
+    if (read(input, &event, sizeof(event)) != sizeof(event)) {
         exit(EXIT_FAILURE);
     }
     if (event.type != EV_KEY) return false;
