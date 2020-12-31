@@ -534,7 +534,7 @@ bool get_input(input_event &event)
 #ifndef NDEBUG
     std::cout << key_name << "\t" << values[event.value] << std::endl;
     // for debug, assign Hiragana/Katakana key to exit program.
-    if (event.code == KEY_KATAKANAHIRAGANA) exit(0);
+    if (event.code == KEY_KATAKANAHIRAGANA) exit(EXIT_SUCCESS);
 #endif
     return true;
 }
