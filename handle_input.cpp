@@ -523,13 +523,12 @@ bool get_input(input_event &event)
     }
     if (event.type != EV_KEY) return false;
 
-    std::string key_name;
-    if (code_names.count(event.code)){
-        key_name = code_names.at(event.code);
-    } else {
-        key_name = "KEY_UNKNOWN";
-    }
-    std::vector<std::string> values =
+    const std::string key_name =
+            code_names.count(event.code) ?
+                code_names.at(event.code) :
+                "KEY_UNKNOWN";
+
+    const std::vector<std::string> values =
     { "RELEASED", "PRESSED", "AUTO-REPEAT" };
 
 #ifndef NDEBUG
