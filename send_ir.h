@@ -1,8 +1,8 @@
-#include <cstdint>
+#pragma once
+// send ir code from transmitter.
+#include "p6_keycodes.h"
 
-struct IRCode {
-    uint8_t control_code;
-    uint8_t key_code;
-};
+bool send_key(const P6KeyEvent& event);
+bool send_gamekey(const P6GameKeyStatus& stat);
 
-bool send_ir(const IRCode& code);
+
