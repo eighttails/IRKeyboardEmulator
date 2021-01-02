@@ -294,11 +294,9 @@ const std::map<int, std::string> code_names
     { KEY_TITLE, "KEY_TITLE" },
     { KEY_SUBTITLE, "KEY_SUBTITLE" },
     { KEY_ANGLE, "KEY_ANGLE" },
-    { KEY_FULL_SCREEN, "KEY_FULL_SCREEN" },
     { KEY_ZOOM, "KEY_ZOOM" },
     { KEY_MODE, "KEY_MODE" },
     { KEY_KEYBOARD, "KEY_KEYBOARD" },
-    { KEY_ASPECT_RATIO, "KEY_ASPECT_RATIO" },
     { KEY_SCREEN, "KEY_SCREEN" },
     { KEY_PC, "KEY_PC" },
     { KEY_TV, "KEY_TV" },
@@ -456,7 +454,6 @@ const std::map<int, std::string> code_names
     { KEY_SCREENSAVER, "KEY_SCREENSAVER" },
     { KEY_VOICECOMMAND, "KEY_VOICECOMMAND" },
     { KEY_ASSISTANT, "KEY_ASSISTANT" },
-    { KEY_KBD_LAYOUT_NEXT, "KEY_KBD_LAYOUT_NEXT" },
 
     { KEY_BRIGHTNESS_MIN, "KEY_BRIGHTNESS_MIN" },
     { KEY_BRIGHTNESS_MAX, "KEY_BRIGHTNESS_MAX" },
@@ -491,10 +488,6 @@ const std::map<int, std::string> code_names
 
     { KEY_DATA, "KEY_DATA" },
     { KEY_ONSCREEN_KEYBOARD, "KEY_ONSCREEN_KEYBOARD" },
-
-    { KEY_PRIVACY_SCREEN_TOGGLE, "KEY_PRIVACY_SCREEN_TOGGLE" },
-
-    { KEY_SELECTIVE_SCREENSHOT, "KEY_SELECTIVE_SCREENSHOT" }
 };
 
 #if 0
@@ -782,11 +775,9 @@ const std::map<int, P6KEYsym> p6code_table
     { KEY_TITLE, KP6_TITLE },
     { KEY_SUBTITLE, KP6_SUBTITLE },
     { KEY_ANGLE, KP6_ANGLE },
-    { KEY_FULL_SCREEN, KP6_FULL_SCREEN },
     { KEY_ZOOM, KP6_ZOOM },
     { KEY_MODE, KP6_MODE },
     { KEY_KEYBOARD, KP6_KEYBOARD },
-    { KEY_ASPECT_RATIO, KP6_ASPECT_RATIO },
     { KEY_SCREEN, KP6_SCREEN },
     { KEY_PC, KP6_PC },
     { KEY_TV, KP6_TV },
@@ -988,6 +979,8 @@ const std::map<int, P6KEYsym> p6code_table
 
 // keyboard device file discriptor
 int input = 0;
+// store terminal flag;
+int term_flag = 0;
 
 void init_input()
 {
@@ -996,6 +989,7 @@ void init_input()
     // disable terminal echo and control characters.
     termios termInfo;
     tcgetattr(0, &termInfo);
+    term_flag = termInfo.c_lflag;
     termInfo.c_lflag = ICANON;
     termInfo.c_lflag &= ~ECHO;
     tcsetattr(0, TCSANOW, &termInfo);
@@ -1004,6 +998,10 @@ void init_input()
 
 void deinit_input()
 {
+    termios termInfo;
+    tcgetattr(0, &termInfo);
+    termInfo.c_lflag = term_flag;
+    tcsetattr(0, TCSANOW, &termInfo);
     close(input);
 }
 
