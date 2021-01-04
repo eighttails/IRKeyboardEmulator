@@ -1,8 +1,9 @@
 #include <cstdint>
 #include <map>
+#include <iostream>
 
 #ifndef IR_STUB
-#include "pigpio.h"
+#include <pigpiod_if2.h>
 #endif
 
 #include "send_ir.h"
@@ -325,9 +326,39 @@ const std::map<P6KEYsym, IRCode> ircode_table_graph =
     { KP6_KANA,         { 0b001, 0xfe }}
 };
 
+
+const unsigned GPIOID = 10;
+const unsigned PWMFREQ = 38000;
+const uint32_t PWMDUTY = 500000; // half of PWM resolution(1000000).
+int pi = 0; //pigpio handle
+
+bool init_ir()
+{
+#ifndef IR_STUB
+    pi = pigpio_start(NULL, NULL);
+    if (pi == 0) {
+        std::cerr << "pigpio_start failed." << std::endl;
+        return false;
+    }
+    int err = 0;
+    err = set_mode(pi, GPIOID, PI_OUTPUT);
+    if (err = set_mode(pi, GPIOID, PI_OUTPUT)) {
+        std::cerr << "set_mode failed. " << err << std::endl;
+        return false;
+    }
+    if (err = hardware_PWM(pi, GPIOID, PWMFREQ, PWMDUTY)) {
+        std::cerr << "hardware_PWM failed. " << err << std::endl;
+        return false;
+    }
+    return true;
+#else
+    return true;
+#endif
+}
+
 bool send_ir(const IRCode &code)
 {
-#ifdef IR_STUB
+#ifndef IR_STUB
     // TODO
     return true;
 #else
