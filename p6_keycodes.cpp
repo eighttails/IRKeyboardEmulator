@@ -99,13 +99,13 @@ bool process_p6_key_event(const P6KeyEvent &event)
     bool pressed = event.pressed;
 
     // handle game specific key event
-    P6GameKeyStatus game_keys = {};
-    if (pressed && code == KP6_SPACE) game_keys.space = true;
-    if (pressed && code == KP6_LEFT)  game_keys.left  = true;
-    if (pressed && code == KP6_DOWN)  game_keys.down  = true;
-    if (pressed && code == KP6_UP)    game_keys.up    = true;
-    if (pressed && code == KP6_STOP)  game_keys.stop  = true;
-    if (pressed && code == KP6_SHIFT) game_keys.shift = true;
+    P6GameKeyStatus game_keys = prev_game_keys;
+    if (code == KP6_SPACE) game_keys.space = pressed;
+    if (code == KP6_LEFT)  game_keys.left  = pressed;
+    if (code == KP6_DOWN)  game_keys.down  = pressed;
+    if (code == KP6_UP)    game_keys.up    = pressed;
+    if (code == KP6_STOP)  game_keys.stop  = pressed;
+    if (code == KP6_SHIFT) game_keys.shift = pressed;
     if (game_keys != prev_game_keys){
         std::cerr << p6_code_names.at(code) << " status changed." << std::endl;
         prev_game_keys = game_keys;
@@ -115,9 +115,6 @@ bool process_p6_key_event(const P6KeyEvent &event)
     }
 
     // handle normal key event
-    // send to IR only if key is pressed.
-    if (!pressed) return true;
-
     std::cerr << p6_code_names.at(code) << (pressed ? " pressed." : " released.") << std::endl;
 
     return send_key(event);

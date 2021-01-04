@@ -408,8 +408,8 @@ bool send_ir(const IRCode &code)
 {
 #ifndef IR_STUB
     // generate pulse for key code.
-    std::vector<gpioPulse_t> pulses;
-    pulses.reserve(1100);
+    static std::vector<gpioPulse_t> pulses;
+    pulses.clear(); // usually 1068.
     //// header
     add_header(pulses);
     //// control code
@@ -469,6 +469,8 @@ bool send_key(const P6KeyEvent &event)
     } else if (code == KP6_GRAPH) {
         graph = pressed;
     } else {
+        // send to IR only if key is pressed.
+        if (!pressed) return true;
         // convert key code to IR code.
         IRCode ir_code = {};
         if (shift) {
