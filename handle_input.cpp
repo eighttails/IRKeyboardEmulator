@@ -519,7 +519,7 @@ const std::map<int, P6KEYsym> p6code_table
     { KEY_O, KP6_O },
     { KEY_P, KP6_P },
     { KEY_LEFTBRACE, KP6_AT },
-    { KEY_RIGHTBRACE, KP6_RBRACKET },
+    { KEY_RIGHTBRACE, KP6_LBRACKET },
     { KEY_ENTER, KP6_RETURN },
     { KEY_LEFTCTRL, KP6_CTRL },
     { KEY_A, KP6_A },
