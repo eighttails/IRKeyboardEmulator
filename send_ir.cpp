@@ -4,6 +4,7 @@
 
 #ifndef IR_STUB
 #include <pigpiod_if2.h>
+#include <vector>
 #endif
 
 #include "send_ir.h"
@@ -327,42 +328,127 @@ const std::map<P6KEYsym, IRCode> ircode_table_graph =
 };
 
 
-const unsigned GPIOID = 10;
+const unsigned GPIOID = 18;
 const unsigned PWMFREQ = 38000;
-const uint32_t PWMDUTY = 500000; // half of PWM resolution(1000000).
+const float DUTY_RATE = 0.5;
+const uint32_t PWMDUTY = 1000000 * DUTY_RATE; 
 int pi = 0; //pigpio handle
 
 bool init_ir()
 {
 #ifndef IR_STUB
     pi = pigpio_start(NULL, NULL);
-    if (pi == 0) {
-        std::cerr << "pigpio_start failed." << std::endl;
+    if (pi < 0) {
+        std::cerr << "pigpio_start failed. " << pi << std::endl;
         return false;
     }
+    std::cerr << "GPIO initialized. No." << pi << std::endl;
     int err = 0;
-    err = set_mode(pi, GPIOID, PI_OUTPUT);
     if (err = set_mode(pi, GPIOID, PI_OUTPUT)) {
         std::cerr << "set_mode failed. " << err << std::endl;
         return false;
     }
-    if (err = hardware_PWM(pi, GPIOID, PWMFREQ, PWMDUTY)) {
-        std::cerr << "hardware_PWM failed. " << err << std::endl;
-        return false;
-    }
+    std::cerr << "GPIO" << GPIOID << " set to output mode." << std::endl;
     return true;
 #else
     return true;
 #endif
 }
 
+bool deinit_ir()
+{
+#ifndef IR_STUB
+    pigpio_stop(pi);
+    return true;
+#else
+    return true;
+#endif
+}
+
+void add_pulse(std::vector<gpioPulse_t>& pulses, bool bit, uint32_t us)
+{
+    uint32_t PI(1<<GPIOID);
+    const uint32_t cycle = 1000000 / PWMFREQ;
+    const uint32_t duration_on = cycle * DUTY_RATE;
+    const uint32_t duration_off = cycle - duration_on;
+
+    if (bit) {
+        uint32_t duration = 0;
+        do {
+            pulses.push_back({PI, 0 , duration_on});   // on
+            pulses.push_back({0 , PI, duration_off});  // off
+            duration += cycle;
+        } while (duration < us);
+    } else {
+        pulses.push_back({0 , PI, us});  // off
+    }
+}
+
+void add_header(std::vector<gpioPulse_t>& pulses)
+{
+    add_pulse(pulses, true, 2484);
+    add_pulse(pulses, false, 491);
+    add_pulse(pulses, true, 418);
+}
+
+
+void add_bit(std::vector<gpioPulse_t>& pulses, bool bit)
+{
+    uint32_t H_US(bit ? 994 : 287);
+    add_pulse(pulses, false, H_US);
+    add_pulse(pulses, true, 418);
+}
+
+void add_footer(std::vector<gpioPulse_t>& pulses)
+{
+    add_pulse(pulses, false, 4567);
+}
+
 bool send_ir(const IRCode &code)
 {
 #ifndef IR_STUB
-    // TODO
+    // generate pulse for key code.
+    std::vector<gpioPulse_t> pulses;
+    pulses.reserve(1100);
+    //// header
+    add_header(pulses);
+    //// control code
+    for (size_t i = 0; i < 3; i++){
+        add_bit(pulses, (code.control_code & (1 << i)) ? true : false); 
+    }
+    //// key code
+    int p = 0;
+    for (size_t i = 0; i < 8; i++){
+        add_bit(pulses, (code.key_code & (1 << i)) ? true : false); 
+    }
+    //// parity (odd)
+    add_bit(pulses, (p % 2) ? true : false);
+
+    //// control code (reverse)
+    for (size_t i = 0; i < 3; i++){
+        add_bit(pulses, (code.control_code & (1 << i)) ? false : true); 
+    }
+    //// key code (reverse)
+    for (size_t i = 0; i < 8; i++){
+        add_bit(pulses, (code.key_code & (1 << i)) ? false : true); 
+    }
+    //// parity (odd reverse)
+    add_bit(pulses, (p % 2) ? false : true);
+    //// footer (off at least 4657 us)
+    add_footer(pulses);
+
+    // generate waveform.
+    wave_clear(pi);
+    wave_add_generic(pi, pulses.size(), pulses.data());
+    int wave_id = wave_create(pi);
+    
+    // send waveform.
+    wave_send_once(pi, wave_id);
+    while (wave_tx_busy(pi)) time_sleep(0.01);
+    wave_delete(pi, wave_id);
+
     return true;
 #else
-    // TODO
     return true;
 #endif
 }
