@@ -107,7 +107,7 @@ bool process_p6_key_event(const P6KeyEvent &event)
     if (pressed && code == KP6_STOP)  game_keys.stop  = true;
     if (pressed && code == KP6_SHIFT) game_keys.shift = true;
     if (game_keys != prev_game_keys){
-        std::cout << p6_code_names.at(code) << " status changed." << std::endl;
+        std::cerr << p6_code_names.at(code) << " status changed." << std::endl;
         prev_game_keys = game_keys;
         if (!send_gamekey(game_keys)){
             return false;
@@ -118,7 +118,7 @@ bool process_p6_key_event(const P6KeyEvent &event)
     // send to IR only if key is pressed.
     if (!pressed) return true;
 
-    std::cout << p6_code_names.at(code) << (pressed ? " pressed." : " released.") << std::endl;
+    std::cerr << p6_code_names.at(code) << (pressed ? " pressed." : " released.") << std::endl;
 
     return send_key(event);
 }

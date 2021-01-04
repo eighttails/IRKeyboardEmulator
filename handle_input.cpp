@@ -642,7 +642,7 @@ bool handle_input()
     { "RELEASED", "PRESSED", "AUTO-REPEAT" };
 
 #ifndef NDEBUG
-    std::cout << key_name << "\t" << values[event.value] << std::endl;
+    std::cerr << key_name << "\t" << values[event.value] << std::endl;
     // for debug, assign Hiragana/Katakana key to exit program.
     if (event.code == KEY_KATAKANAHIRAGANA) {
         deinit_input();
@@ -659,7 +659,7 @@ bool handle_input()
     if (key_code == KP6_UNKNOWN) {
         // if key is not assigned to P6 keymap, do nothing.
 #ifndef NDEBUG
-        std::cout << key_name << " is not assigned to P6 keymap." << std::endl;
+        std::cerr << key_name << " is not assigned to P6 keymap." << std::endl;
 #endif
         return true;
     }
