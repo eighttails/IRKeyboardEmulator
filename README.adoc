@@ -33,7 +33,7 @@ Raspberry PIの実機上でセルフコンパイルを想定しています。 +
 1. 開発環境をインストールします。 +
 `sudo apt install git build-essential pigpio`
 1. ホームディレクトリにソースコードをダウンロードします。 +
-`cd && git clone **** && cd IRKeyboardEmulator`
+`cd && git clone https://github.com/eighttails/IRKeyboardEmulator.git && cd IRKeyboardEmulator`
 1. ビルドを実行。 +
 `./build.sh`
 1. 実行 +
