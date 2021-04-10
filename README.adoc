@@ -26,6 +26,10 @@ GPIOは18番を使用してください。
 
 image::doc/IR_emitter.png[]
 
+作者の作例はこのようになっています。
+
+image::doc/Emitter_example.jpg[]
+
 == ビルド、実行方法
 Raspberry PIの実機上でセルフコンパイルを想定しています。 +
 このアプリケーションのための専用の環境(SDカード)のご用意を推奨します。
