@@ -2,6 +2,7 @@
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y build-essential pigpio cmake
+sudo apt autoremove
 sudo apt clean
 sudo systemctl enable pigpiod
 
