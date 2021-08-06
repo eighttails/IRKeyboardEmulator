@@ -1,5 +1,8 @@
 #!/bin/bash
-sudo apt install build-essential pigpio cmake
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y build-essential pigpio cmake
+sudo apt clean
 sudo systemctl enable pigpiod
 
 BUILD_DIR=../build-IRKeyboardEmulator
@@ -8,4 +11,7 @@ cmake -S src -DIR_STUB=OFF -DCMAKE_BUILD_TYPE=Release -B $BUILD_DIR
 cmake --build $BUILD_DIR
 sudo cmake --install $BUILD_DIR
 
-echo "@reboot   /usr/local/bin/IRKeyboardEmulator" | crontab
+sudo raspi-config nonint do_boot_behaviour B2
+
+echo "/usr/local/bin/IRKeyboardEmulator" >> ~/.bashrc
+
