@@ -11,3 +11,4 @@ else()
 endif()
 
 add_executable(IRKeyboardEmulator handle_input.cpp p6_keycodes.cpp send_ir.cpp main.cpp)
+install (TARGETS IRKeyboardEmulator DESTINATION bin)

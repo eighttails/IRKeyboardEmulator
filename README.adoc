@@ -1,4 +1,3 @@
-
 = PC-6601SR用赤外線キーボードエミュレータ (IRKeyboardEmulator)
 :toc-title: 目次
 :toc: left
@@ -46,13 +45,16 @@ GPIOは18番を使用してください。
 
 image::doc/IR_emitter.png[]
 
-作者の作例はこのようになっています。
+作者の作例はこのようになっています。 +
+(L字型ピンヘッダを用いた関係で、この作例ではピン配置が短辺方向に反転している点に注意してください。)
 
 image::doc/Emitter_example.jpg[]
 image::doc/Emitter_example1.jpg[]
 image::doc/Emitter_example2.jpg[]
 image::doc/Emitter_example3.jpg[]
 
+実行イメージはこちらの動画をご覧ください。 +
+https://twitter.com/eighttails/status/1346042702765248518
 
 == キー割り当て
 PC-6601SR固有のキーは以下のように割り当てられています。 + 
