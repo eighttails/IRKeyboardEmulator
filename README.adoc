@@ -25,7 +25,7 @@ NEC社製パソコンPC-6601SRはPC-6001/6601シリーズの中で唯一セパ�
 == インストール、実行方法
 1. 4GB以上のSDカードをご用意ください。 +
 1. 以下のOSイメージファイルをダウンロードして `IRKeyboardEmulator_1.0.0.img` を展開してください。 +
-1. Windowsの場合はXXXXを使ってSDカードにイメージを書き込んでください。
+1. Windowsの場合は https://sourceforge.net/projects/win32diskimager/files/Archive/[Win32 Disk Imager] を使ってSDカードにイメージを書き込んでください。
 1. Linuxの場合はddを使ってSDカードにイメージを書き込んでください。 +
 `sudo dd if=IRKeyboardEmulator_1.0.0.img of=(SDカードのデバイス名)`
 1. Raspberry PiにSDカードと赤外線送信回路を取り付けて電源を入れてください。自動的にアプリが起動し、赤外線キーボードとして機能するようになります。
