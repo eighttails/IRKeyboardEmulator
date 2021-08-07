@@ -2,8 +2,8 @@
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y build-essential pigpio cmake
-sudo apt autoremove
-sudo apt clean
+sudo apt autoremove -y
+sudo apt clean -y
 sudo systemctl enable pigpiod
 
 BUILD_DIR=../build-IRKeyboardEmulator
